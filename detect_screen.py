@@ -27,7 +27,6 @@ except ImportError as e:
 
 # Глобальна змінна для зберігання посилання на вікно
 detect_window_ref = None
-# Змінна для моделі (щоб завантажити один раз) - покращення
 model_instance = None
 model_loaded = False
 
@@ -132,7 +131,6 @@ class CharacterWidgetManager:
         entry = ttk.Entry(frame, font=("Arial", 12), width=5, justify='center', validate="key", validatecommand=(validate_cmd, "%P"))
         entry.insert(0, char if char != '?' else '') # Вставляємо розпізнаний символ, якщо він не '?'
         entry.pack(pady=5)
-        # entry.bind("<Tab>", ...) # Можна додати навігацію табом, якщо потрібно
 
         # --- Кнопка видалення ---
         delete_button = ttk.Button(frame, text="Видалити", command=lambda idx=len(self.widgets): self._delete_widget(idx))
@@ -202,10 +200,6 @@ class CharacterWidgetManager:
 
             # Конвертуємо літери у верхній регістр для назви папки
             save_folder_char = corrected_char.upper()
-
-            # Потенційна проблема: спецсимволи в назвах папок.
-            # Для більшої надійності можна замінити їх:
-            # save_folder_char = save_folder_char.replace('#', '_hash_').replace('&', '_amp_').replace('@', '_at_')
 
             if len(save_folder_char) != 1:
                 print(f"Попередження: Некоректний символ '{corrected_char}' для збереження (індекс {i}). Пропускаємо.")
@@ -282,9 +276,6 @@ def save_corrected_results(manager: CharacterWidgetManager):
 
     print(f"Збереження завершено. Успішно: {saved_count}, Помилки: {errors_count}")
     tk.messagebox.showinfo("Збереження", f"Збереження завершено.\nУспішно: {saved_count}\nПомилки: {errors_count}")
-    # Можна закрити вікно після збереження, якщо потрібно
-    # if detect_window_ref:
-    #    detect_window_ref.destroy()
 
 
 def on_close_detect_window():
@@ -322,8 +313,6 @@ def detect_screen(root, canvas_bgr_image, reopen=False):
         print(f"Розпізнано: {''.join(recognized_characters)}")
 
         # 2. Отримуємо відсортовані bounding boxes
-        #    ВАЖЛИВО: `get_characters_contours` повертає бокси ДО розпізнавання.
-        #    Ми маємо їх зіставити з `recognized_characters` (ігноруючи пробіли).
         sorted_boxes, _, _ = get_characters_contours(canvas_bgr_image)
 
         # 3. Зіставлення: Створюємо список боксів, що відповідають НЕ-пробільним символам
@@ -339,7 +328,6 @@ def detect_screen(root, canvas_bgr_image, reopen=False):
                     print(f"Помилка зіставлення: Не вистачає боксів для символу '{char}'")
                     # Додамо фіктивний бокс, щоб уникнути падіння
                     aligned_boxes.append((0,0,10,10)) # Або інша обробка помилки
-            # Для пробілів бокс не потрібен
 
         if len(aligned_boxes) != len([c for c in recognized_characters if c != ' ']):
              print("Попередження: Кількість зіставлених боксів не співпадає з кількістю не-пробільних символів!")
@@ -353,7 +341,6 @@ def detect_screen(root, canvas_bgr_image, reopen=False):
     detect_window = tk.Toplevel(root)
     detect_window_ref = detect_window
     detect_window.title("Результати розпізнавання - HandSketch")
-    # detect_window.iconbitmap(...) # Додай іконку, якщо є
     detect_window.geometry("900x400") # Збільшимо розмір
     detect_window.minsize(600, 300)
     detect_window.focus_set()
