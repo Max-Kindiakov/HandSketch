@@ -7,13 +7,13 @@
 
 import cv2
 import torch
-import torch.nn as nn # Потрібно для type hinting у detect_characters
+import torch.nn as nn
 import numpy as np
 import os
 from PIL import Image
-import torch.nn.functional as F # Для функції padding
-import json # <--- Імпортуємо бібліотеку JSON
-import torchvision.transforms as transforms # <--- Потрібно для transforms.Pad
+import torch.nn.functional as F
+import json
+import torchvision.transforms as transforms
 
 # Імпортуємо конфігурацію: Модель та ТРАНСФОРМАЦІЮ ДЛЯ ВАЛІДАЦІЇ/ТЕСТУВАННЯ
 try:
@@ -71,7 +71,6 @@ try:
         print("який описано у '{CLASS_INFO_PATH}', або перетренуйте модель.")
         print("-" * 30)
         # Не зупиняємо програму, але попередження дуже важливе
-        # Можна розкоментувати exit(), якщо потрібна зупинка
         # exit(1)
     else:
          print(f"Кількість завантажених класів ({loaded_classes_count}) відповідає NUM_CLASSES.")
@@ -100,8 +99,6 @@ except Exception as e:
     print("-" * 30)
     exit(1)
 
-# --- Видаляємо старе, жорстко закодоване мапування ---
-# CLASS_MAP = { ... } # ВИДАЛЕНО
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>> КІНЕЦЬ ЗМІН <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -131,16 +128,11 @@ def preprocess_roi(roi_image: np.ndarray) -> torch.Tensor:
     padding_top = (target_size - height) // 2
     padding_bottom = target_size - height - padding_top
 
-    # fill=0 для чорного фону, fill=255 для білого. Оскільки thresh інвертований (символ білий),
-    # фон буде чорним (0), тому додаємо чорні рамки (fill=0).
-    # Якщо б thresh не був інвертований, використовували б fill=255.
+   
     padding_transform = transforms.Pad((padding_left, padding_top, padding_right, padding_bottom), fill=0)
     roi_padded = padding_transform(roi_pil)
 
-    # Використовуємо трансформації з configuration.py
-    # val_test_transform має містити Resize, ToTensor, Normalize
-    # Переконаємось, що він не містить Grayscale, оскільки ми робимо convert('L')
-    # Краще зібрати потрібні трансформації тут, щоб бути впевненим
+
     final_transform = transforms.Compose([
         transforms.Resize((IMG_HEIGHT, IMG_WIDTH), interpolation=transforms.InterpolationMode.BICUBIC), # Якісніша інтерполяція
         transforms.ToTensor(),
