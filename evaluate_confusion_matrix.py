@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns # Для красивішої візуалізації матриці
+import seaborn as sns
 from sklearn.metrics import confusion_matrix
 import os
 import json
