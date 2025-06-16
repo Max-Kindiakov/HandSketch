@@ -7,11 +7,11 @@
 import cv2
 import numpy as np
 import tkinter as tk
-from tkinter import ttk # Використовуємо ttk для кращого вигляду
+from tkinter import ttk
 from tkinter import messagebox, filedialog
 import threading
 import os
-import time # Може знадобитися для очікування потоку
+import time
 from datetime import datetime
 from PIL import Image, ImageTk
 
@@ -35,12 +35,6 @@ model_exists = os.path.exists(BEST_MODEL_PATH)
 if not model_exists and not INITIAL_TRAINING_TRIGGERED:
     # Замість автоматичного запуску, покажемо попередження
     print(f"Попередження: Файл найкращої моделі '{BEST_MODEL_PATH}' не знайдено.")
-    # Можна додати messagebox, якщо потрібне сповіщення в GUI при старті
-    # messagebox.showwarning("Модель не знайдено",
-    #                        f"Файл '{BEST_MODEL_PATH}' не знайдено.\n"
-    #                        "Функція розпізнавання буде недоступна.\n"
-    #                        "Натисніть 'Train Again', щоб почати тренування.")
-    # Не запускаємо тренування автоматично
 
 # --- Ініціалізація Головного Вікна Tkinter ---
 root = tk.Tk()
@@ -96,7 +90,6 @@ else:
 canvas = np.ones((height, width, 3), dtype="uint8") * 255 # Білий фон (BGR)
 
 # --- Налаштування GUI Елементів ---
-# Використовуємо ttk для кращого вигляду
 style = ttk.Style()
 style.configure("TButton", padding=5, relief="flat", background="#ccc")
 style.map("TButton", background=[('active', '#eee')])
@@ -145,7 +138,6 @@ def mouse_press(event):
         elif event.num == 3: # Права кнопка - стирання
             mouse_drawing = False
             mouse_erasing = True
-            # Для стирання не потрібні prev_x, prev_y
 
 def mouse_release(event):
     """Обробляє відпускання кнопки миші."""
