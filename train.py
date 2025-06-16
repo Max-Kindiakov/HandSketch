@@ -15,8 +15,8 @@ from torchvision import datasets
 import argparse
 import os
 import time
-import json # <--- Імпортуємо бібліотеку JSON
-from tqdm import tqdm # Для прогрес-бару
+import json
+from tqdm import tqdm
 
 # Імпортуємо конфігурацію (модель та трансформації)
 try:
@@ -149,14 +149,10 @@ def start_training():
         }
         try:
             with open(class_info_path, 'w', encoding='utf-8') as f:
-                # ensure_ascii=False важливий для правильного збереження не-латинських символів (якщо будуть)
-                # indent=4 для читабельного форматування файлу
                 json.dump(class_info_to_save, f, ensure_ascii=False, indent=4)
             print(f"Інформацію про класи успішно збережено у: '{class_info_path}'")
         except IOError as e:
             print(f"!!! ПОМИЛКА !!! Не вдалося зберегти інформацію про класи у '{class_info_path}': {e}")
-            # Вирішіть, чи продовжувати тренування без цього файлу (не рекомендується)
-            # exit(1)
         except Exception as e:
              print(f"!!! НЕОЧІКУВАНА ПОМИЛКА під час збереження class_info.json: {e}")
              # exit(1)
